@@ -18,7 +18,7 @@
        ============================ -->
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">⛽ NYC Gas Price Tracker</a>
+      <a class="navbar-brand fw-bold" href="index.html"> NYC Gas Price Tracker</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -48,9 +48,7 @@
   <div class="container my-5">
 
     <!-- Info alert about data availability -->
-    <div class="alert alert-warning" role="alert">
-      <strong>📍 Note on Borough-Level Data:</strong> The EIA does not publish gas prices for individual NYC boroughs (Brooklyn, Manhattan, etc.).
-      The regions below are the most local breakdowns the EIA provides for the New York area.
+    <div class="alert alert-warning" role="alert"
       <strong>SNY = New York State</strong> is the closest available.
     </div>
 
@@ -62,18 +60,18 @@
 
     <!-- Error box -->
     <div id="error-areas" class="alert alert-danger d-none" role="alert">
-      <strong>⚠️ Error:</strong> Could not load area data. Please check your API key or try again later.
+      <strong> Error:</strong> Could not load area data. Please check your API key or try again later.
     </div>
 
     <!-- Area cards showing the most recent price per region -->
-    <h3 class="mb-4 fw-semibold d-none" id="areas-heading">🗺️ Most Recent Price — By Area</h3>
+    <h3 class="mb-4 fw-semibold d-none" id="areas-heading"> Most Recent Price — By Area</h3>
     <div id="area-cards" class="row g-4"></div>
 
     <!-- Spacer -->
     <div class="mt-5"></div>
 
     <!-- Facets section: shows all valid area codes (Endpoint 2) -->
-    <h3 class="mb-3 fw-semibold d-none" id="facets-heading">📂 All Available EIA Area Codes</h3>
+    <h3 class="mb-3 fw-semibold d-none" id="facets-heading">All Available EIA Area Codes</h3>
     <p class="text-muted d-none" id="facets-subtext">
       These are all the geographic area codes returned by the EIA Facet endpoint. 
       Only a subset has New York-relevant data.
