@@ -133,32 +133,7 @@ GET https://api.eia.gov/v2/petroleum/pri/gnd/facet/duoarea
           </p>
         </div>
 
-        <!-- =====================
-             SECTION 4: API Key
-             ===================== -->
-        <div class="doc-section mb-5">
-          <h2 class="doc-heading">API Key Setup</h2>
-          <div class="alert alert-warning">
-            <strong>The EIA API requires a free API key.</strong> Without it, all requests will fail.
-          </div>
-
-          <h5>How to get your API key:</h5>
-          <ol>
-            <li>Go to <a href="https://www.eia.gov/opendata/" target="_blank">https://www.eia.gov/opendata/</a></li>
-            <li>Click <strong>"Register"</strong> and fill out the short form</li>
-            <li>Check your email for your API key</li>
-          </ol>
-
-          <h5 class="mt-4">How to add your key to this app:</h5>
-          <p>Open <code>script.js</code> and find this line near the top:</p>
-          <div class="code-block">const API_KEY = "YOUR_API_KEY";</div>
-          <p>Replace <code>YOUR_API_KEY</code> with the actual key you received by email. For example:</p>
-          <div class="code-block">const API_KEY = "abc123xyz456";</div>
-          <div class="alert alert-danger mt-2">
-            <strong>Important:</strong> Never share your API key publicly on GitHub or social media.
-            If you host this on GitHub Pages, consider using an environment variable or backend proxy in a real project.
-          </div>
-        </div>
+      
 
         <!-- =====================
              SECTION 5: Tech Stack
