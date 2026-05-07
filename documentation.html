@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Documentation | NYC Gas Price Tracker</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- Our custom stylesheet -->
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">⛽ NYC Gas Price Tracker</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="boroughs.html">NY Prices by Area</a></li>
+          <li class="nav-item"><a class="nav-link active" href="documentation.html">Documentation</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero text-center text-white py-5">
+    <div class="container">
+      <h1 class="display-4 fw-bold">📄 Documentation</h1>
+      <p class="lead">How this app works, what API it uses, and how to set it up</p>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+
+        <!-- =====================
+             SECTION 1: What the app does
+             ===================== -->
+        <div class="doc-section mb-5">
+          <h2 class="doc-heading">🚀 What This App Does</h2>
+          <p>
+            The <strong>NYC Gas Price Tracker</strong> is a beginner-friendly web app that pulls <strong>real weekly gas price data</strong>
+            from the U.S. government's Energy Information Administration (EIA) and displays it in an easy-to-read format.
+          </p>
+          <p>
+            Because the EIA does not break gas prices down by NYC borough, this app uses <strong>New York State</strong> data —
+            the most local geographic level the EIA publishes. The app shows prices for regular, midgrade, premium, and diesel fuel.
+          </p>
+          <ul>
+            <li><strong>Home page:</strong> Shows the latest weekly prices for New York State in a card + table layout</li>
+            <li><strong>NY Prices by Area:</strong> Compares recent gas prices across multiple EIA-defined regions near New York</li>
+            <li><strong>Documentation:</strong> This page — explains how everything works</li>
+          </ul>
+        </div>
+
+        <!-- =====================
+             SECTION 2: The API
+             ===================== -->
+        <div class="doc-section mb-5">
+          <h2 class="doc-heading">🔌 What API Is Used?</h2>
+          <p>
+            This app uses the <strong>EIA Open Data API</strong> — a free, public API provided by the
+            <a href="https://www.eia.gov/opendata/" target="_blank">U.S. Energy Information Administration</a>.
+          </p>
+
+          <table class="table table-bordered mt-3">
+            <tbody>
+              <tr><th>Provider</th><td>U.S. Energy Information Administration (EIA)</td></tr>
+              <tr><th>Base URL</th><td><code>https://api.eia.gov/v2</code></td></tr>
+              <tr><th>Data Format</th><td>JSON</td></tr>
+              <tr><th>Cost</th><td>Free</td></tr>
+              <tr><th>Sign Up</th><td><a href="https://www.eia.gov/opendata/" target="_blank">https://www.eia.gov/opendata/</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- =====================
+             SECTION 3: Endpoints
+             ===================== -->
+        <div class="doc-section mb-5">
+          <h2 class="doc-heading">📡 Endpoints Used</h2>
+
+          <h5 class="mt-4">Endpoint 1 — Weekly Gas Price Data</h5>
+          <div class="code-block">
+GET https://api.eia.gov/v2/petroleum/pri/gnd/data/
+  ?frequency=weekly
+  &data[0]=value
+  &facets[duoarea][]=SNY
+  &sort[0][column]=period
+  &sort[0][direction]=desc
+  &length=20
+  &api_key=YOUR_API_KEY
+          </div>
+          <p class="mt-2">
+            This endpoint returns weekly retail gasoline and diesel prices. In this app, we filter it to
+            <strong>New York State (SNY)</strong> and sort by most recent date first.
+            The <code>length=20</code> parameter limits results to the 20 most recent entries.
+          </p>
+
+          <table class="table table-sm table-bordered mt-3">
+            <thead class="table-dark"><tr><th>Parameter</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>frequency=weekly</code></td><td>Get weekly data (not monthly or annual)</td></tr>
+              <tr><td><code>data[0]=value</code></td><td>Include the price value in the response</td></tr>
+              <tr><td><code>facets[duoarea][]=SNY</code></td><td>Filter to New York State only</td></tr>
+              <tr><td><code>sort[0][column]=period</code></td><td>Sort by the date column</td></tr>
+              <tr><td><code>sort[0][direction]=desc</code></td><td>Most recent dates appear first</td></tr>
+              <tr><td><code>length=20</code></td><td>Return only 20 rows</td></tr>
+              <tr><td><code>api_key=...</code></td><td>Your free EIA API key</td></tr>
+            </tbody>
+          </table>
+
+          <h5 class="mt-4">Endpoint 2 — Available Area Codes (Facets)</h5>
+          <div class="code-block">
+GET https://api.eia.gov/v2/petroleum/pri/gnd/facet/duoarea
+  ?api_key=YOUR_API_KEY
+          </div>
+          <p class="mt-2">
+            This endpoint returns all valid geographic area codes (called <strong>duoarea</strong>) 
+            that exist in the gasoline prices dataset. We use this on the
+            <strong>NY Prices by Area</strong> page to show users which areas the EIA tracks,
+            and to fetch prices for each New York-relevant area.
+          </p>
+        </div>
+
+        <!-- =====================
+             SECTION 4: API Key
+             ===================== -->
+        <div class="doc-section mb-5">
+          <h2 class="doc-heading">🔑 API Key Setup</h2>
+          <div class="alert alert-warning">
+            <strong>The EIA API requires a free API key.</strong> Without it, all requests will fail.
+          </div>
+
+          <h5>How to get your API key:</h5>
+          <ol>
+            <li>Go to <a href="https://www.eia.gov/opendata/" target="_blank">https://www.eia.gov/opendata/</a></li>
+            <li>Click <strong>"Register"</strong> and fill out the short form</li>
+            <li>Check your email for your API key</li>
+          </ol>
+
+          <h5 class="mt-4">How to add your key to this app:</h5>
+          <p>Open <code>script.js</code> and find this line near the top:</p>
+          <div class="code-block">const API_KEY = "YOUR_API_KEY";</div>
+          <p>Replace <code>YOUR_API_KEY</code> with the actual key you received by email. For example:</p>
+          <div class="code-block">const API_KEY = "abc123xyz456";</div>
+          <div class="alert alert-danger mt-2">
+            <strong>⚠️ Important:</strong> Never share your API key publicly on GitHub or social media.
+            If you host this on GitHub Pages, consider using an environment variable or backend proxy in a real project.
+          </div>
+        </div>
+
+        <!-- =====================
+             SECTION 5: Tech Stack
+             ===================== -->
+        <div class="doc-section mb-5">
+          <h2 class="doc-heading">🛠️ Tech Stack</h2>
+          <table class="table table-bordered">
+            <thead class="table-dark"><tr><th>Technology</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td>HTML5</td><td>Page structure</td></tr>
+              <tr><td>Bootstrap 5</td><td>Responsive layout, cards, tables, navbar</td></tr>
+              <tr><td>Vanilla JavaScript</td><td>API calls using <code>fetch()</code>, DOM manipulation</td></tr>
+              <tr><td>CSS (style.css)</td><td>Custom colors and visual styling</td></tr>
+              <tr><td>EIA Open Data API</td><td>Gas price data source</td></tr>
+            </tbody>
+          </table>
+          <p class="text-muted">No frameworks like React, Vue, or Node.js were used. No event listeners were used. This is beginner-level plain JavaScript.</p>
+        </div>
+
+        <!-- =====================
+             SECTION 6: File structure
+             ===================== -->
+        <div class="doc-section mb-5">
+          <h2 class="doc-heading">📁 File Structure</h2>
+          <div class="code-block">
+project-folder/
+├── index.html          ← Home page (NY State prices)
+├── boroughs.html       ← Regional comparison page
+├── documentation.html  ← This page
+├── script.js           ← All JavaScript / API logic
+└── style.css           ← Custom styles
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="text-center text-white py-4 mt-5">
+    <p class="mb-0">Data from <a href="https://www.eia.gov/opendata/" class="text-warning" target="_blank">EIA Open Data API</a> &mdash; Built for educational purposes</p>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

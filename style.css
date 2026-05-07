@@ -1,0 +1,201 @@
+/* ============================================================
+   style.css — NYC Gas Price Tracker
+   Custom styles on top of Bootstrap 5
+   ============================================================ */
+
+
+/* ============================================================
+   GLOBAL BODY & BACKGROUND
+   ============================================================ */
+body {
+  background-color: #f4f6f9;
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+/* ============================================================
+   NAVBAR
+   Dark navy background matching the app theme
+   ============================================================ */
+.navbar {
+  background-color: #0d1b2a;
+}
+
+.navbar-brand {
+  font-size: 1.3rem;
+  letter-spacing: 0.5px;
+}
+
+.nav-link {
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #f9c74f !important;
+}
+
+.nav-link.active {
+  color: #f9c74f !important;
+  font-weight: 600;
+}
+
+
+/* ============================================================
+   HERO SECTION
+   Gradient background at the top of each page
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, #0d1b2a 0%, #1a3a5c 60%, #2a6496 100%);
+  border-bottom: 4px solid #f9c74f;
+}
+
+.hero h1 {
+  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.hero .lead {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+
+/* ============================================================
+   PRICE CARDS
+   Cards that display the gas price summary
+   ============================================================ */
+.price-card {
+  border: none;
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.price-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12) !important;
+}
+
+.price-card .card-header {
+  background-color: #0d1b2a;
+  color: #f9c74f;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+
+/* ============================================================
+   TABLE STYLING
+   Clean, modern data tables
+   ============================================================ */
+.table {
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table thead.table-dark th {
+  background-color: #0d1b2a;
+  color: #f9c74f;
+  font-weight: 600;
+  border: none;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #f0f4f8;
+}
+
+.table td, .table th {
+  vertical-align: middle;
+  padding: 0.75rem 1rem;
+}
+
+
+/* ============================================================
+   DOCUMENTATION PAGE
+   Sections and code blocks for the docs page
+   ============================================================ */
+.doc-section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.doc-heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0d1b2a;
+  border-bottom: 3px solid #f9c74f;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+/* Code/URL display blocks */
+.code-block {
+  background-color: #1e2d3d;
+  color: #a8d8ea;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.85rem;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  white-space: pre-wrap;       /* Wraps long lines */
+  word-break: break-all;
+  line-height: 1.7;
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background-color: #0d1b2a;
+  border-top: 3px solid #f9c74f;
+  font-size: 0.9rem;
+}
+
+footer a {
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+
+/* ============================================================
+   BADGES
+   Slightly larger, pill-shaped fuel type badges
+   ============================================================ */
+.badge {
+  font-size: 0.78rem;
+  padding: 0.35em 0.65em;
+  border-radius: 20px;
+}
+
+
+/* ============================================================
+   SPINNER (loading animation)
+   ============================================================ */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+
+/* ============================================================
+   RESPONSIVE ADJUSTMENTS
+   Smaller text on mobile screens
+   ============================================================ */
+@media (max-width: 576px) {
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero .lead {
+    font-size: 0.95rem;
+  }
+
+  .display-5 {
+    font-size: 2rem;
+  }
+}
