@@ -1,12 +1,8 @@
-/* ============================================================
-   style.css — NYC Gas Price Tracker
-   Custom styles on top of Bootstrap 5
-   ============================================================ */
+/* style.css — NYC Gas Price Tracker
+   Custom styles on top of Bootstrap 5*/
 
 
-/* ============================================================
-   GLOBAL BODY & BACKGROUND
-   ============================================================ */
+/* GLOBAL BODY & BACKGROUND */
 body {
   background-color: #f4f6f9;
   color: #333;
@@ -14,10 +10,7 @@ body {
 }
 
 
-/* ============================================================
-   NAVBAR
-   Dark navy background matching the app theme
-   ============================================================ */
+/* NAVBAR Dark navy background matching the app theme */
 .navbar {
   background-color: #0d1b2a;
 }
@@ -42,10 +35,7 @@ body {
 }
 
 
-/* ============================================================
-   HERO SECTION
-   Gradient background at the top of each page
-   ============================================================ */
+/*   HERO SECTION Gradient background at the top of each pag */
 .hero {
   background: linear-gradient(135deg, #0d1b2a 0%, #1a3a5c 60%, #2a6496 100%);
   border-bottom: 4px solid #f9c74f;
@@ -61,10 +51,7 @@ body {
 }
 
 
-/* ============================================================
-   PRICE CARDS
-   Cards that display the gas price summary
-   ============================================================ */
+/* PRICE CARDS Cards that display the gas price summary */
 .price-card {
   border: none;
   border-radius: 12px;
@@ -83,10 +70,7 @@ body {
 }
 
 
-/* ============================================================
-   TABLE STYLING
-   Clean, modern data tables
-   ============================================================ */
+/* TABLE STYLING Clean, modern data tables */
 .table {
   background-color: #ffffff;
   border-radius: 10px;
@@ -110,10 +94,7 @@ body {
 }
 
 
-/* ============================================================
-   DOCUMENTATION PAGE
-   Sections and code blocks for the docs page
-   ============================================================ */
+/* DOCUMENTATION PAGE Sections and code blocks for the docs page */
 .doc-section {
   background: #ffffff;
   border-radius: 12px;
@@ -144,9 +125,7 @@ body {
 }
 
 
-/* ============================================================
-   FOOTER
-   ============================================================ */
+/* FOOTER */
 footer {
   background-color: #0d1b2a;
   border-top: 3px solid #f9c74f;
@@ -161,11 +140,7 @@ footer a:hover {
   text-decoration: underline;
 }
 
-
-/* ============================================================
-   BADGES
-   Slightly larger, pill-shaped fuel type badges
-   ============================================================ */
+/* BADGES Slightly larger, pill-shaped fuel type badges */
 .badge {
   font-size: 0.78rem;
   padding: 0.35em 0.65em;
@@ -173,19 +148,14 @@ footer a:hover {
 }
 
 
-/* ============================================================
-   SPINNER (loading animation)
-   ============================================================ */
+/* SPINNER (loading animation) */
 .spinner-border {
   width: 3rem;
   height: 3rem;
 }
 
 
-/* ============================================================
-   RESPONSIVE ADJUSTMENTS
-   Smaller text on mobile screens
-   ============================================================ */
+/* RESPONSIVE ADJUSTMENTS Smaller text on mobile screens */
 @media (max-width: 576px) {
   .hero h1 {
     font-size: 1.8rem;
