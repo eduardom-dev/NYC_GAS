@@ -5,17 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NY Prices by Area | NYC Gas Price Tracker</title>
 
-  <!-- Bootstrap CSS -->
+   <!--Bootstrap CSS-->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
 
-  <!-- Our custom stylesheet -->
+  <!--Our custom stylesheet-->
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-  <!-- ============================
-       NAVBAR
-       ============================ -->
+  <!--NAVBAR-->
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html"> NYC Gas Price Tracker</a>
@@ -32,9 +30,7 @@
     </div>
   </nav>
 
-  <!-- ============================
-       HERO SECTION
-       ============================ -->
+  <!-- HERO SECTION-->
   <div class="hero text-center text-white py-5">
     <div class="container">
       <h1 class="display-4 fw-bold">NY Gas Prices by Region</h1>
@@ -42,32 +38,28 @@
     </div>
   </div>
 
-  <!-- ============================
-       MAIN CONTENT
-       ============================ -->
+  <!--MAIN CONTENT-->
   <div class="container my-5">
 
-    <!-- Info alert about data availability -->
+    <!--Info alert about data availability-->
     <div class="alert alert-warning" role="alert"
       <strong>SNY = New York State</strong> is the closest available.
     </div>
 
-    <!-- Loading spinner -->
+    <!--Loading spinner-->
     <div id="loading-areas" class="text-center py-5">
       <div class="spinner-border text-warning" role="status"></div>
       <p class="mt-3 text-muted">Fetching available areas from EIA API...</p>
     </div>
 
-    <!-- Error box -->
+    <!--Error box-->
     <div id="error-areas" class="alert alert-danger d-none" role="alert">
       <strong> Error:</strong> Could not load area data. Please check your API key or try again later.
     </div>
 
-    <!-- Area cards showing the most recent price per region -->
+    <!--Area cards showing the most recent price per region-->
     <h3 class="mb-4 fw-semibold d-none" id="areas-heading"> Most Recent Price — By Area</h3>
     <div id="area-cards" class="row g-4"></div>
-
-    <!-- Spacer -->
     <div class="mt-5"></div>
 
   <!-- FOOTER -->
@@ -82,11 +74,9 @@
   <script src="script.js"></script>
 
   <script>
-    // ============================================================
     // This page uses BOTH EIA endpoints:
     // 1. The Facet endpoint to get all area codes
     // 2. The Data endpoint to fetch recent prices for each NY area
-    // ============================================================
     loadAreaComparison();
   </script>
 
