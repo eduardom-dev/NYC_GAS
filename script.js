@@ -44,26 +44,30 @@ function getFuelName(productCode) {
 // Gives each fuel type a Bootstrap color class for the badge
 // ============================================================
 function getFuelBadgeColor(productCode) {
-  if (productCode === "EPM0" || productCode === "EPM0U") return "success";   // green
-  if (productCode === "EPMM") return "primary";                               // blue
-  if (productCode === "EPMP") return "danger";                                // red
-  if (productCode.startsWith("EPD")) return "dark";                           // black
-  return "secondary";                                                          // gray
+  if (productCode === "EPM0" || productCode === "EPM0U") return "success";
+  if (productCode === "EPMM") return "primary";
+  if (productCode === "EPMP") return "danger";
+  if (productCode.startsWith("EPD")) return "dark";
+  return "secondary";
 }
+
+
+// ============================================================
+// GLOBAL VARIABLE — stores all rows for filtering
+// ============================================================
+let allRows = [];
 
 
 // ============================================================
 // FUNCTION: loadGasPrices(areaCode)
 // Used on: index.html
 //
-// Fetches weekly gas price data for a specific EIA area code
-// and renders summary cards + a data table on the page.
-//
-// Uses Endpoint 1: /petroleum/pri/gnd/data/
+// Uses async/await to fetch data from Endpoint 1.
+// Renders summary cards + a data table.
 // ============================================================
-function loadGasPrices(areaCode) {
+async function loadGasPrices(areaCode) {
 
-  // Build the API request URL with all query parameters
+  // Build the API request URL
   const url = BASE_URL + "/petroleum/pri/gnd/data/"
     + "?frequency=weekly"
     + "&data[0]=value"
@@ -73,44 +77,100 @@ function loadGasPrices(areaCode) {
     + "&length=20"
     + "&api_key=" + API_KEY;
 
-  // Use fetch() to call the API — this is built into modern browsers
-  fetch(url)
-    .then(function(response) {
-      // Check if the server responded successfully
-      if (!response.ok) {
-        throw new Error("API request failed with status " + response.status);
-      }
-      // Convert the response to JSON so we can work with it
-      return response.json();
-    })
-    .then(function(json) {
-      // The actual data rows are inside json.response.data
-      var rows = json.response.data;
+  try {
+    // Call the API and wait for a response
+    const response = await fetch(url);
 
-      // If no data came back, show an error
-      if (!rows || rows.length === 0) {
-        showError("loading", "error-box");
-        return;
-      }
+    // Check if the server responded successfully
+    if (!response.ok) {
+      throw new Error("API request failed with status " + response.status);
+    }
 
-      // Hide the loading spinner now that we have data
-      document.getElementById("loading").classList.add("d-none");
+    // Convert the response to JSON so we can work with it
+    const json = await response.json();
 
-      // Show the table title
-      var titleEl = document.getElementById("table-title");
-      if (titleEl) titleEl.style.display = "block";
+    // The actual data rows are inside json.response.data
+    const rows = json.response.data;
 
-      // Build the summary cards (one per fuel type for the most recent week)
-      buildSummaryCards(rows);
-
-      // Build the full data table
-      buildPriceTable(rows);
-    })
-    .catch(function(error) {
-      // Something went wrong — hide loading and show the error box
-      console.error("EIA API error:", error);
+    // If no data came back, show an error
+    if (!rows || rows.length === 0) {
       showError("loading", "error-box");
-    });
+      return;
+    }
+
+    // Save rows globally so filter function can access them
+    allRows = rows;
+
+    // Hide the loading spinner now that we have data
+    document.getElementById("loading").classList.add("d-none");
+
+    // Show the table title using DOM manipulation
+    const titleEl = document.getElementById("table-title");
+    if (titleEl) titleEl.style.display = "block";
+
+    // Show the filter section
+    const filterSection = document.getElementById("filter-section");
+    if (filterSection) filterSection.classList.remove("d-none");
+
+    // Build the summary cards (one per fuel type for the most recent week)
+    buildSummaryCards(rows);
+
+    // Build the full data table
+    buildPriceTable(rows);
+
+  } catch (error) {
+    // Something went wrong — hide loading and show the error box
+    console.error("EIA API error:", error);
+    showError("loading", "error-box");
+  }
+}
+
+
+// ============================================================
+// FUNCTION: filterTable()
+// Called by the filter button (onclick event).
+// Reads the user's input from the form and filters the table.
+// ============================================================
+function filterTable() {
+
+  // Read the value the user typed in the search box
+  const searchInput = document.getElementById("search-fuel");
+  const searchValue = searchInput.value.toLowerCase();
+
+  // Filter the rows array to only keep matching entries
+  const filtered = allRows.filter(function(row) {
+    const fuelName = getFuelName(row["product"]).toLowerCase();
+    return fuelName.includes(searchValue);
+  });
+
+  // Show a message if nothing matched
+  const noResults = document.getElementById("no-results");
+  if (filtered.length === 0) {
+    if (noResults) noResults.classList.remove("d-none");
+  } else {
+    if (noResults) noResults.classList.add("d-none");
+  }
+
+  // Re-build the table with only the filtered rows
+  buildPriceTable(filtered);
+}
+
+
+// ============================================================
+// FUNCTION: clearFilter()
+// Called by the clear button (onclick event).
+// Resets the search box and shows all rows again.
+// ============================================================
+function clearFilter() {
+  // Clear the text input
+  document.getElementById("search-fuel").value = "";
+
+  // Hide the no-results message
+  const noResults = document.getElementById("no-results");
+  if (noResults) noResults.classList.add("d-none");
+
+  // Rebuild the table with all rows
+  buildPriceTable(allRows);
 }
 
 
@@ -120,14 +180,14 @@ function loadGasPrices(areaCode) {
 // most recent price for that fuel.
 // ============================================================
 function buildSummaryCards(rows) {
-  var container = document.getElementById("summary-cards");
+  const container = document.getElementById("summary-cards");
   if (!container) return;
 
-  // Track which fuel types we've already shown (to get only the latest)
-  var seen = {};
+  // Track which fuel types we've already shown
+  const seen = {};
 
   rows.forEach(function(row) {
-    var product = row["product"];
+    const product = row["product"];
 
     // Skip if we've already made a card for this fuel type
     if (seen[product]) return;
@@ -137,14 +197,15 @@ function buildSummaryCards(rows) {
     if (!row["value"] || row["value"] === null) return;
 
     // Create one card column
-    var col = document.createElement("div");
+    const col = document.createElement("div");
     col.className = "col-sm-6 col-md-3";
 
-    var price = parseFloat(row["value"]).toFixed(3);
-    var fuel  = getFuelName(product);
-    var badge = getFuelBadgeColor(product);
-    var date  = row["period"];
+    const price = parseFloat(row["value"]).toFixed(3);
+    const fuel  = getFuelName(product);
+    const badge = getFuelBadgeColor(product);
+    const date  = row["period"];
 
+    // Set the innerHTML of the card
     col.innerHTML = `
       <div class="card h-100 shadow-sm price-card">
         <div class="card-body text-center">
@@ -159,7 +220,7 @@ function buildSummaryCards(rows) {
     container.appendChild(col);
   });
 
-  // Now show the cards container (it was hidden until now)
+  // Show the cards container
   container.classList.remove("d-none");
 }
 
@@ -169,23 +230,23 @@ function buildSummaryCards(rows) {
 // Builds a full HTML table with one row per data entry.
 // ============================================================
 function buildPriceTable(rows) {
-  var tbody  = document.getElementById("price-table-body");
-  var wrapper = document.getElementById("table-wrapper");
+  const tbody   = document.getElementById("price-table-body");
+  const wrapper = document.getElementById("table-wrapper");
   if (!tbody || !wrapper) return;
 
-  // Clear any old content
+  // Clear any old content using innerHTML
   tbody.innerHTML = "";
 
   rows.forEach(function(row) {
     // Skip rows with no price data
     if (!row["value"] || row["value"] === null) return;
 
-    var tr = document.createElement("tr");
+    const tr = document.createElement("tr");
 
-    var price    = parseFloat(row["value"]).toFixed(3);
-    var fuel     = getFuelName(row["product"]);
-    var badge    = getFuelBadgeColor(row["product"]);
-    var areaName = row["area-name"] || row["duoarea"];
+    const price    = parseFloat(row["value"]).toFixed(3);
+    const fuel     = getFuelName(row["product"]);
+    const badge    = getFuelBadgeColor(row["product"]);
+    const areaName = row["area-name"] || row["duoarea"];
 
     tr.innerHTML = `
       <td>${row["period"]}</td>
@@ -208,8 +269,8 @@ function buildPriceTable(rows) {
 // Hides the loading spinner and shows an error message box.
 // ============================================================
 function showError(loadingId, errorId) {
-  var loading = document.getElementById(loadingId);
-  var errorBox = document.getElementById(errorId);
+  const loading  = document.getElementById(loadingId);
+  const errorBox = document.getElementById(errorId);
   if (loading)  loading.classList.add("d-none");
   if (errorBox) errorBox.classList.remove("d-none");
 }
@@ -219,20 +280,16 @@ function showError(loadingId, errorId) {
 // FUNCTION: loadAreaComparison()
 // Used on: boroughs.html
 //
-// Step 1: Calls Endpoint 2 (facets) to get all area codes
-// Step 2: For a set of NY-relevant areas, calls Endpoint 1
-//         to fetch the most recent price
-// Then displays cards and a facets reference table
+// Uses async/await with Endpoint 2 (facets) and Endpoint 1
+// to display regional price cards and an area code table.
 // ============================================================
-function loadAreaComparison() {
+async function loadAreaComparison() {
 
   // These are the EIA area codes relevant to New York
-  // The EIA does not have per-borough data, so these are the
-  // closest regional breakdowns available
-  var nyAreas = ["SNY", "NUS", "R10", "R1X"];
+  const nyAreas = ["SNY", "NUS", "R10", "R1X"];
 
-  // Area labels so we can show a friendly name
-  var areaLabels = {
+  // Friendly labels for each area code
+  const areaLabels = {
     "SNY": "New York State",
     "NUS": "U.S. National Average",
     "R10": "East Coast (PADD 1)",
@@ -240,65 +297,57 @@ function loadAreaComparison() {
   };
 
   // --- STEP 1: Fetch the facets list (Endpoint 2) ---
-  var facetUrl = BASE_URL + "/petroleum/pri/gnd/facet/duoarea?api_key=" + API_KEY;
+  try {
+    const facetUrl = BASE_URL + "/petroleum/pri/gnd/facet/duoarea?api_key=" + API_KEY;
+    const facetResponse = await fetch(facetUrl);
 
-  fetch(facetUrl)
-    .then(function(response) {
-      if (!response.ok) throw new Error("Facet request failed");
-      return response.json();
-    })
-    .then(function(json) {
-      // Build the reference table of all area codes
-      buildFacetsTable(json.response.values || []);
-    })
-    .catch(function(error) {
-      console.error("Facet load error:", error);
-      // Non-critical — the page still works without the facets table
-    });
+    if (!facetResponse.ok) throw new Error("Facet request failed");
+
+    const facetJson = await facetResponse.json();
+    buildFacetsTable(facetJson.response.values || []);
+
+  } catch (error) {
+    console.error("Facet load error:", error);
+    // Non-critical — page still works without the facets table
+  }
 
   // --- STEP 2: Fetch price data for each NY area (Endpoint 1) ---
-  // We'll collect all results in an array, then render them all at once
-  var allResults = [];
-  var pending    = nyAreas.length;  // how many requests are still in progress
+  const allResults = [];
 
-  nyAreas.forEach(function(areaCode) {
+  // Loop through each area code and fetch its most recent price
+  for (let i = 0; i < nyAreas.length; i++) {
+    const areaCode = nyAreas[i];
 
-    var url = BASE_URL + "/petroleum/pri/gnd/data/"
+    const url = BASE_URL + "/petroleum/pri/gnd/data/"
       + "?frequency=weekly"
       + "&data[0]=value"
       + "&facets[duoarea][]=" + areaCode
-      + "&facets[product][]=EPM0U"   // Regular gasoline (all formulations)
+      + "&facets[product][]=EPM0U"
       + "&sort[0][column]=period"
       + "&sort[0][direction]=desc"
-      + "&length=1"                  // Just the most recent record
+      + "&length=1"
       + "&api_key=" + API_KEY;
 
-    fetch(url)
-      .then(function(response) {
-        if (!response.ok) throw new Error("Area request failed for " + areaCode);
-        return response.json();
-      })
-      .then(function(json) {
-        var rows = json.response.data;
-        if (rows && rows.length > 0) {
-          // Add a friendly label to the result
-          rows[0]["friendly-name"] = areaLabels[areaCode] || rows[0]["area-name"];
-          allResults.push(rows[0]);
-        }
-        pending--;
-        // Once all area requests are done, render the cards
-        if (pending === 0) {
-          renderAreaCards(allResults);
-        }
-      })
-      .catch(function(error) {
-        console.error("Error fetching area " + areaCode + ":", error);
-        pending--;
-        if (pending === 0) {
-          renderAreaCards(allResults);
-        }
-      });
-  });
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Area request failed for " + areaCode);
+
+      const json = await response.json();
+      const rows = json.response.data;
+
+      if (rows && rows.length > 0) {
+        // Add a friendly label to the result
+        rows[0]["friendly-name"] = areaLabels[areaCode] || rows[0]["area-name"];
+        allResults.push(rows[0]);
+      }
+
+    } catch (error) {
+      console.error("Error fetching area " + areaCode + ":", error);
+    }
+  }
+
+  // Render all the area cards once all fetches are done
+  renderAreaCards(allResults);
 }
 
 
@@ -310,8 +359,8 @@ function renderAreaCards(results) {
   // Hide the loading spinner
   document.getElementById("loading-areas").classList.add("d-none");
 
-  var container = document.getElementById("area-cards");
-  var heading   = document.getElementById("areas-heading");
+  const container = document.getElementById("area-cards");
+  const heading   = document.getElementById("areas-heading");
   if (!container) return;
 
   // If nothing loaded, show the error box
@@ -324,11 +373,11 @@ function renderAreaCards(results) {
   if (heading) heading.classList.remove("d-none");
 
   results.forEach(function(row) {
-    var price     = parseFloat(row["value"]).toFixed(3);
-    var areaName  = row["friendly-name"] || row["area-name"];
-    var date      = row["period"];
+    const price    = parseFloat(row["value"]).toFixed(3);
+    const areaName = row["friendly-name"] || row["area-name"];
+    const date     = row["period"];
 
-    var col = document.createElement("div");
+    const col = document.createElement("div");
     col.className = "col-sm-6 col-md-3";
 
     col.innerHTML = `
@@ -353,16 +402,17 @@ function renderAreaCards(results) {
 // the boroughs page.
 // ============================================================
 function buildFacetsTable(values) {
-  var tbody   = document.getElementById("facets-table-body");
-  var wrapper = document.getElementById("facets-wrapper");
-  var heading = document.getElementById("facets-heading");
-  var subtext = document.getElementById("facets-subtext");
+  const tbody   = document.getElementById("facets-table-body");
+  const wrapper = document.getElementById("facets-wrapper");
+  const heading = document.getElementById("facets-heading");
+  const subtext = document.getElementById("facets-subtext");
   if (!tbody || !wrapper) return;
 
+  // Clear old content
   tbody.innerHTML = "";
 
   values.forEach(function(item) {
-    var tr = document.createElement("tr");
+    const tr = document.createElement("tr");
     tr.innerHTML = `
       <td><code>${item.id}</code></td>
       <td>${item.description}</td>
