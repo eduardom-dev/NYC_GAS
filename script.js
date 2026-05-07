@@ -1,29 +1,10 @@
-// ============================================================
-// script.js — NYC Gas Price Tracker
-// Uses the EIA Open Data API to display weekly gas prices
-// for New York State and surrounding regions.
-//
 // Endpoints used:
 //   1. /petroleum/pri/gnd/data/   → gas price data
 //   2. /petroleum/pri/gnd/facet/duoarea → area code list
-// ============================================================
-
-
-// ============================================================
-// CONFIGURATION
-// Replace YOUR_API_KEY with your real EIA API key.
-// Get a free key at: https://www.eia.gov/opendata/
-// ============================================================
 const API_KEY = "650AreLTKWz6eqyeVQAaSyHeouaTrHVnw9BhGRtN";
-
 // The base URL for all EIA API requests
 const BASE_URL = "https://api.eia.gov/v2";
-
-
-// ============================================================
 // FUEL TYPE LOOKUP TABLE
-// Maps EIA product codes to human-readable fuel names
-// ============================================================
 const FUEL_NAMES = {
   "EPM0":  "Regular Gasoline",
   "EPM0U": "Regular (All Formulations)",
@@ -37,12 +18,8 @@ const FUEL_NAMES = {
 function getFuelName(productCode) {
   return FUEL_NAMES[productCode] || productCode;
 }
-
-
-// ============================================================
 // FUEL TYPE BADGE COLOR
 // Gives each fuel type a Bootstrap color class for the badge
-// ============================================================
 function getFuelBadgeColor(productCode) {
   if (productCode === "EPM0" || productCode === "EPM0U") return "success";
   if (productCode === "EPMM") return "primary";
@@ -50,21 +27,12 @@ function getFuelBadgeColor(productCode) {
   if (productCode.startsWith("EPD")) return "dark";
   return "secondary";
 }
-
-
-// ============================================================
 // GLOBAL VARIABLE — stores all rows for filtering
-// ============================================================
 let allRows = [];
-
-
-// ============================================================
 // FUNCTION: loadGasPrices(areaCode)
 // Used on: index.html
-//
 // Uses async/await to fetch data from Endpoint 1.
 // Renders summary cards + a data table.
-// ============================================================
 async function loadGasPrices(areaCode) {
 
   // Build the API request URL
@@ -125,12 +93,9 @@ async function loadGasPrices(areaCode) {
   }
 }
 
-
-// ============================================================
 // FUNCTION: filterTable()
 // Called by the filter button (onclick event).
 // Reads the user's input from the form and filters the table.
-// ============================================================
 function filterTable() {
 
   // Read the value the user typed in the search box
@@ -156,11 +121,9 @@ function filterTable() {
 }
 
 
-// ============================================================
 // FUNCTION: clearFilter()
 // Called by the clear button (onclick event).
 // Resets the search box and shows all rows again.
-// ============================================================
 function clearFilter() {
   // Clear the text input
   document.getElementById("search-fuel").value = "";
@@ -174,11 +137,9 @@ function clearFilter() {
 }
 
 
-// ============================================================
 // FUNCTION: buildSummaryCards(rows)
 // Creates one Bootstrap card per fuel type showing the
 // most recent price for that fuel.
-// ============================================================
 function buildSummaryCards(rows) {
   const container = document.getElementById("summary-cards");
   if (!container) return;
@@ -225,10 +186,8 @@ function buildSummaryCards(rows) {
 }
 
 
-// ============================================================
 // FUNCTION: buildPriceTable(rows)
 // Builds a full HTML table with one row per data entry.
-// ============================================================
 function buildPriceTable(rows) {
   const tbody   = document.getElementById("price-table-body");
   const wrapper = document.getElementById("table-wrapper");
@@ -264,10 +223,8 @@ function buildPriceTable(rows) {
 }
 
 
-// ============================================================
 // FUNCTION: showError(loadingId, errorId)
 // Hides the loading spinner and shows an error message box.
-// ============================================================
 function showError(loadingId, errorId) {
   const loading  = document.getElementById(loadingId);
   const errorBox = document.getElementById(errorId);
@@ -276,13 +233,10 @@ function showError(loadingId, errorId) {
 }
 
 
-// ============================================================
 // FUNCTION: loadAreaComparison()
 // Used on: boroughs.html
-//
 // Uses async/await with Endpoint 2 (facets) and Endpoint 1
 // to display regional price cards and an area code table.
-// ============================================================
 async function loadAreaComparison() {
 
   // These are the EIA area codes relevant to New York
@@ -296,7 +250,7 @@ async function loadAreaComparison() {
     "R1X": "New England"
   };
 
-  // --- STEP 1: Fetch the facets list (Endpoint 2) ---
+  //STEP 1: Fetch the facets list (Endpoint 2)
   try {
     const facetUrl = BASE_URL + "/petroleum/pri/gnd/facet/duoarea?api_key=" + API_KEY;
     const facetResponse = await fetch(facetUrl);
@@ -311,7 +265,7 @@ async function loadAreaComparison() {
     // Non-critical — page still works without the facets table
   }
 
-  // --- STEP 2: Fetch price data for each NY area (Endpoint 1) ---
+  // STEP 2: Fetch price data for each NY area (Endpoint 1)
   const allResults = [];
 
   // Loop through each area code and fetch its most recent price
@@ -351,10 +305,8 @@ async function loadAreaComparison() {
 }
 
 
-// ============================================================
 // FUNCTION: renderAreaCards(results)
 // Displays one card per region on the boroughs page.
-// ============================================================
 function renderAreaCards(results) {
   // Hide the loading spinner
   document.getElementById("loading-areas").classList.add("d-none");
@@ -396,11 +348,9 @@ function renderAreaCards(results) {
 }
 
 
-// ============================================================
 // FUNCTION: buildFacetsTable(values)
 // Fills in the reference table of all EIA area codes on
 // the boroughs page.
-// ============================================================
 function buildFacetsTable(values) {
   const tbody   = document.getElementById("facets-table-body");
   const wrapper = document.getElementById("facets-wrapper");
